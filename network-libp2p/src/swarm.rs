@@ -955,7 +955,7 @@ fn handle_request_response_request(
             }
         }
     } else {
-        trace!(%type_id, %request_id, %peer_id, "No request handler registered, replying with a 'NoReceiver' error");
+        error!(%type_id, %request_id, %peer_id, "No request handler registered, replying with a 'NoReceiver' error");
         let err: Result<(), InboundRequestError> = Err(InboundRequestError::NoReceiver);
         if event_info
             .swarm
