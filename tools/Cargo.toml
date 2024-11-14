@@ -33,6 +33,10 @@ path = "src/rpc-schema/main.rs"
 name = "nimiq-trim-genesis-config"
 path = "src/trim-genesis-config/main.rs"
 
+[[bin]]
+name = "nimiq-block-hash"
+path = "src/block-hash.rs"
+
 [dependencies]
 anyhow = "1.0"
 clap = { version = "4.5", features = ["cargo"] }
@@ -48,6 +52,7 @@ syn = { version = "2.0", features = ["full"] }
 thiserror = "2.0"
 toml = "0.8"
 
+nimiq-block = { workspace = true }
 nimiq-bls = { workspace = true }
 nimiq-database = { workspace = true }
 nimiq-genesis-builder = { workspace = true }

@@ -4124,6 +4124,30 @@ dependencies = [
 ]
 
 [[package]]
+name = "nimiq-historian"
+version = "1.0.0-rc.4"
+dependencies = [
+ "clap",
+ "futures-util",
+ "nimiq-block",
+ "nimiq-consensus",
+ "nimiq-genesis",
+ "nimiq-hash",
+ "nimiq-keys",
+ "nimiq-lib",
+ "nimiq-network-interface",
+ "nimiq-network-libp2p",
+ "nimiq-primitives",
+ "nimiq-utils",
+ "rand",
+ "serde",
+ "tokio",
+ "tokio-metrics",
+ "toml",
+ "tracing",
+]
+
+[[package]]
 name = "nimiq-jsonrpc-client"
 version = "0.1.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -4893,6 +4917,7 @@ dependencies = [
  "clap",
  "convert_case",
  "hex",
+ "nimiq-block",
  "nimiq-bls",
  "nimiq-database",
  "nimiq-genesis-builder",

@@ -1,0 +1,45 @@
+[package]
+name = "nimiq-historian"
+version.workspace = true
+authors.workspace = true
+license.workspace = true
+edition.workspace = true
+description = "Download and store Nimiq blocks"
+homepage.workspace = true
+repository.workspace = true
+categories.workspace = true
+keywords.workspace = true
+exclude = ["db", "peer_key.dat"]
+
+[badges]
+travis-ci = { repository = "nimiq/core-rs", branch = "master" }
+is-it-maintained-issue-resolution = { repository = "nimiq/core-rs" }
+is-it-maintained-open-issues = { repository = "nimiq/core-rs" }
+maintenance = { status = "experimental" }
+
+[lints]
+workspace = true
+
+[dependencies]
+clap = { version = "4.5", features = ["derive"] }
+futures = { workspace = true }
+log = { workspace = true }
+rand = "0.8.5"
+serde = "1.0"
+tokio = { version = "1.41", features = ["rt-multi-thread", "time", "tracing"] }
+tokio-metrics = { version = "0.3" }
+toml = "0.8"
+
+nimiq-block = { workspace = true }
+nimiq-consensus = { workspace = true }
+nimiq-genesis = { workspace = true }
+nimiq-hash = { workspace = true }
+nimiq-keys = { workspace = true }
+nimiq-network-interface = { workspace = true }
+nimiq-network-libp2p = { workspace = true }
+nimiq-primitives = { workspace = true, features = ["coin", "networks"] }
+nimiq-utils = { workspace = true }
+
+[dependencies.nimiq]
+workspace = true
+features = [ "database-storage", "deadlock", "logging", "metrics-server", "panic", "rpc-server", "signal-handling", "tokio-websocket", "validator", "wallet"]

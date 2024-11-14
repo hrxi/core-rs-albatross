@@ -20,6 +20,7 @@ members = [
   "handel",
   "hash",
   "hash/hash_derive",
+  "historian",
   "key-derivation",
   "keys",
   "lib",
