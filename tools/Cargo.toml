@@ -22,6 +22,10 @@ name = "nimiq-address"
 path = "src/address/main.rs"
 
 [[bin]]
+name = "nimiq-block"
+path = "src/block/main.rs"
+
+[[bin]]
 name = "nimiq-signtx"
 path = "src/signtx/main.rs"
 
