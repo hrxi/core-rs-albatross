@@ -157,7 +157,10 @@ fn write_block(block: &Block) -> io::Result<()> {
     if let Some(parent_election_hash) = block.parent_election_hash() {
         symlink_dir(block_ref(parent_election_hash), filename_block(&block_hash, "parent_election"))?;
     }
-    symlink_dir(format!("../../../blocks/{}", hash_to_dir(&block_hash)), format!("by-height/{}/{:04}/{}", block.block_number() / 1000, block.block_number() % 1000, block_hash))?;
+    {
+        let no = block.block_number();
+        symlink_dir(format!("../../../blocks/{}", hash_to_dir(&block_hash)), format!("by-height/{}/{:03}/{:03}/{}", no / 1000 / 1000, no / 1000 % 1000, no % 1000, block_hash))?;
+    }
     fs::remove_file(filename_missing_block(&block_hash))?;
     Ok(())
 }
