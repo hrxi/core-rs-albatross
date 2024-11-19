@@ -21,7 +21,7 @@ use nimiq::{
 };
 use nimiq::config::config_file::LogSettings;
 use nimiq_block::{Block, MacroBlock, MacroHeader};
-use nimiq_consensus::messages::{BlockBodyTopic, BlockHeaderTopic, RequestBlock, RequestHead, ResponseHead};
+use nimiq_consensus::messages::{BlockHeaderTopic, RequestBlock, RequestHead, ResponseHead};
 use nimiq_genesis::NetworkInfo;
 use nimiq_hash::Blake2bHash;
 use nimiq_hash::nimiq_serde::Serialize;
@@ -117,10 +117,6 @@ fn hash_to_dir(block_hash: &Blake2bHash) -> String {
     format!("{}/{}/{}", &hash[..2], &hash[2..4], &hash[4..])
 }
 
-fn block_ref(block_hash: &Blake2bHash) -> String {
-    format!("../../../{}", hash_to_dir(block_hash))
-}
-
 fn filename_block(block_hash: &Blake2bHash, name: &str) -> String {
     format!("blocks/{}/{}", hash_to_dir(block_hash), name)
 }
@@ -153,13 +149,13 @@ fn read_missing_hashes() -> io::Result<Vec<Blake2bHash>> {
 fn write_block(block: &Block) -> io::Result<()> {
     let block_hash = block.hash();
     write_atomically(&filename_block(&block_hash, "block"), &block.serialize_to_vec())?;
-    symlink_dir(block_ref(block.parent_hash()), filename_block(&block_hash, "parent"))?;
+    symlink_dir(&format!("../../../../{}", hash_to_dir(block.parent_hash())), format!("blocks/{}/children/{}", hash_to_dir(&block_hash), block.parent_hash()))?;
     if let Some(parent_election_hash) = block.parent_election_hash() {
-        symlink_dir(block_ref(parent_election_hash), filename_block(&block_hash, "parent_election"))?;
+        symlink_dir(&format!("../../../../{}", hash_to_dir(parent_election_hash)), format!("blocks/{}/child_elections/{}", hash_to_dir(&block_hash), parent_election_hash))?;
     }
     {
         let no = block.block_number();
-        symlink_dir(format!("../../../blocks/{}", hash_to_dir(&block_hash)), format!("by-height/{}/{:03}/{:03}/{}", no / 1000 / 1000, no / 1000 % 1000, no % 1000, block_hash))?;
+        symlink_dir(format!("../../../../blocks/{}", hash_to_dir(&block_hash)), format!("by-height/{}/{:03}/{:03}/{}", no / 1000 / 1000, no / 1000 % 1000, no % 1000, block_hash))?;
     }
     fs::remove_file(filename_missing_block(&block_hash))?;
     Ok(())
@@ -170,8 +166,16 @@ fn verify_block(hash: &Blake2bHash, mut block: Block) -> Option<Block> {
         return None;
     }
     block.verify(block.network()).ok()?;
-    block.body()?;
-    block.justification()?;
+    if !block.has_body() {
+        return None;
+    }
+    let has_justification = match &block {
+        Block::Macro(macro_) => macro_.justification.is_some(),
+        Block::Micro(micro_) => micro_.justification.is_some(),
+    };
+    if !has_justification {
+        return None;
+    }
     Some(block)
 }
 
